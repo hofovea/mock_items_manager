@@ -1,4 +1,8 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:mock_items_manager/app/feats/dashboard/domain/entity/subtask/subtask.dart';
 import 'package:mock_items_manager/app/feats/dashboard/domain/entity/task/task.dart';
 import 'package:mock_items_manager/app/feats/dashboard/domain/repository/i_dashboard_repository.dart';
 import 'package:mock_items_manager/core/failures/failures.dart';
@@ -6,23 +10,24 @@ import 'package:mock_items_manager/core/failures/failures.dart';
 class DashboardProvider with ChangeNotifier {
   final IDashboardRepository _dashboardRepository;
   final List<Task> _tasks = [];
-  final List<Task> _subtasksBuffer = [];
+  final List<Subtask> _subtasksBuffer = [];
   String? errorMessage;
   bool isLoading = false;
 
   DashboardProvider({
     required IDashboardRepository dashboardRepository,
-  }) : _dashboardRepository = dashboardRepository;
+  }) : _dashboardRepository = dashboardRepository {
+    loadTasks();
+  }
 
-  List<Task> get subtaskBuffer => _subtasksBuffer;
+  List<Subtask> get subtaskBuffer => _subtasksBuffer;
 
   List<Task> get tasks => _tasks;
 
   void _saveCurrentTaskList() {
-    isLoading = true;
     notifyListeners();
     _dashboardRepository.saveChanges(_tasks).then(
-      (saveOperation) {
+      (saveOperation) async {
         saveOperation.fold(
           (failure) {
             onFailure(failure);
@@ -36,9 +41,26 @@ class DashboardProvider with ChangeNotifier {
     );
   }
 
-  void presetSubtaskBuffer(List<Task>? newSubtasks) {
+  void loadTasks() async {
+    isLoading = true;
+    notifyListeners();
+    final operationResult = await _dashboardRepository.loadDashboard();
+    operationResult.fold(
+      (failure) {
+        onFailure(failure);
+      },
+      (loadedTasks) {
+        _tasks.clear();
+        _tasks.addAll(loadedTasks);
+        isLoading = false;
+        notifyListeners();
+      },
+    );
+  }
+
+  void presetSubtaskBuffer(List<Subtask> newSubtasks) {
     _subtasksBuffer.clear();
-    if (newSubtasks != null && newSubtasks.isNotEmpty) {
+    if (newSubtasks.isNotEmpty) {
       _subtasksBuffer.addAll(newSubtasks);
     }
   }
@@ -76,12 +98,12 @@ class DashboardProvider with ChangeNotifier {
   }
 
   //Subtasks operations
-  void addSubtask(int? taskIndex, Task subtask) {
+  void addSubtask(int? taskIndex, Subtask subtask) {
     _subtasksBuffer.add(subtask);
     notifyListeners();
   }
 
-  void updateSubtask(int? taskIndex, int subtaskIndex, Task subtask) {
+  void updateSubtask(int? taskIndex, int subtaskIndex, Subtask subtask) {
     _subtasksBuffer[subtaskIndex] = subtask;
     notifyListeners();
   }
@@ -98,6 +120,7 @@ class DashboardProvider with ChangeNotifier {
       InvalidResponseFailure() => 'Invalid response, try again',
       UserMissingFailure() => 'User not found, try creating account',
       UserAlreadyExistsFailure() => 'This user already exists',
+      UnknownFailure() => 'Something went wrong',
     };
     notifyListeners();
   }

@@ -23,3 +23,6 @@ class ServerUnavailableFailure extends Failure {
 class InvalidResponseFailure extends Failure {
   InvalidResponseFailure({super.description});
 }
+class UnknownFailure extends Failure {
+  UnknownFailure({super.description});
+}

@@ -1,10 +1,15 @@
-import 'package:auto_route/auto_route.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:auto_route/auto_route.dart';
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/dashboard/domain/entity/task/task.dart';
 import 'package:mock_items_manager/app/feats/dashboard/domain/providers/dashboard_provider.dart';
 import 'package:mock_items_manager/common/widgets/base_screen.dart';
 import 'package:mock_items_manager/utils/router/router.dart';
-import 'package:provider/provider.dart';
 
 @RoutePage()
 class TaskFormScreen extends StatefulWidget {
@@ -94,17 +99,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         final subtask = subtasksSource[subtaskIndex];
                         return ListTile(
                           title: Text(subtask.title),
-                          subtitle: Text(subtask.status.toString().split('.').last),
+                          subtitle: Text(subtask.description),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              switch (subtask.status) {
-                                TaskStatus.todo => const Icon(Icons.circle, color: Colors.grey),
-                                TaskStatus.inProgress =>
-                                  const Icon(Icons.run_circle, color: Colors.deepOrange),
-                                TaskStatus.done =>
-                                  const Icon(Icons.check_circle, color: Colors.green),
-                              },
                               IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
@@ -129,7 +127,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                             ],
                           ),
                         );
-                        return null;
                       },
                     );
                   }

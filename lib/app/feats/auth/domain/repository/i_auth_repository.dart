@@ -1,4 +1,7 @@
+// Package imports:
 import 'package:fpdart/fpdart.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/auth/domain/entity/user/user.dart';
 import 'package:mock_items_manager/core/failures/failures.dart';
 

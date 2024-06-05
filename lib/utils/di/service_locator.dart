@@ -1,6 +1,7 @@
-import 'dart:io';
-
+// Package imports:
 import 'package:get_it/get_it.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/auth/data/datasource/datasource_impl/file_auth_datasource.dart';
 import 'package:mock_items_manager/app/feats/auth/data/datasource/i_auth_datasource.dart';
 import 'package:mock_items_manager/app/feats/auth/data/repository_impl/auth_repository.dart';
@@ -9,37 +10,43 @@ import 'package:mock_items_manager/app/feats/dashboard/data/datasources/datasour
 import 'package:mock_items_manager/app/feats/dashboard/data/datasources/i_dashboard_datasource.dart';
 import 'package:mock_items_manager/app/feats/dashboard/data/repository_impl/dashboard_repository.dart';
 import 'package:mock_items_manager/app/feats/dashboard/domain/repository/i_dashboard_repository.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:mock_items_manager/core/services/file_service.dart';
 
-final _serviceLocator = GetIt.instance;
+final serviceLocator = GetIt.instance;
 
 Future<void> init() async {
-  final directory = await getApplicationCacheDirectory();
-  final path = directory.path;
-  final authStorageFile = File('$path/auth_storage.json');
-  final dashboardStorageFile = File('$path/dashboard_storage.json');
-  if (!(await authStorageFile.exists())) {
-    await authStorageFile.writeAsString('[]');
-    await dashboardStorageFile.writeAsString('[]');
-  }
+  await _registerServices();
+  await GetIt.I.allReady();
+}
 
-  _serviceLocator.registerLazySingleton<IAuthDatasource>(
-    () => FileAuthDatasource(storage: authStorageFile),
+Future<void> _registerServices() async {
+  serviceLocator.registerSingletonAsync<FileService>(
+    () async {
+      final service = FileService();
+      await service.init();
+      return service;
+    },
   );
-  _serviceLocator.registerLazySingleton<IAuthRepository>(
+
+  serviceLocator.registerLazySingleton<IAuthDatasource>(
+    () => FileAuthDatasource(
+      storage: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton<IAuthRepository>(
     () => AuthRepository(
-      authDatasource: _serviceLocator(),
+      authDatasource: serviceLocator(),
     ),
   );
 
-  _serviceLocator.registerLazySingleton<IDashboardDatasource>(
+  serviceLocator.registerLazySingleton<IDashboardDatasource>(
     () => FileDashboardDatasource(
-      storage: dashboardStorageFile,
+      storage: serviceLocator(),
     ),
   );
-  _serviceLocator.registerLazySingleton<IDashboardRepository>(
+  serviceLocator.registerLazySingleton<IDashboardRepository>(
     () => DashboardRepository(
-      dashboardDatasource: _serviceLocator(),
+      dashboardDatasource: serviceLocator(),
     ),
   );
 }

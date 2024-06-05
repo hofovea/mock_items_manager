@@ -1,4 +1,8 @@
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
+import 'package:mock_items_manager/app/feats/dashboard/domain/entity/subtask/subtask.dart';
 
 part 'task.freezed.dart';
 
@@ -9,21 +13,12 @@ class Task with _$Task {
   const factory Task({
     required String title,
     required TaskStatus status,
-    List<Task>? subtasks,
+    @Default(<Subtask>[])List<Subtask> subtasks,
   }) = _Task;
 
   const Task._();
 
-  factory Task.asSubtask({
-    required String title,
-    required TaskStatus status,
-  }) {
-    return Task(title: title, status: status, subtasks: null);
-  }
-
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
-
-  bool get isSubtask => subtasks == null;
 }
 
 enum TaskStatus {

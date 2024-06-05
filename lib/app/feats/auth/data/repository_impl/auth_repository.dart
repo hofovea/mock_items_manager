@@ -1,8 +1,10 @@
+// Package imports:
 import 'package:fpdart/fpdart.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/auth/data/datasource/i_auth_datasource.dart';
 import 'package:mock_items_manager/app/feats/auth/domain/entity/user/user.dart';
 import 'package:mock_items_manager/app/feats/auth/domain/repository/i_auth_repository.dart';
-
 import 'package:mock_items_manager/core/failures/failures.dart';
 
 class AuthRepository implements IAuthRepository {
@@ -26,12 +28,6 @@ class AuthRepository implements IAuthRepository {
         ServerInternalFailure(),
       );
     }
-
-    // final authFactor = Random().nextDouble() * 100;
-    // if (authFactor < 25) {
-    // } else if (authFactor >= 25 && authFactor < 50) {
-    // } else if (authFactor >= 50 && authFactor < 75) {
-    // } else {}
   }
 
   @override

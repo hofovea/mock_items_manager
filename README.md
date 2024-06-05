@@ -37,6 +37,3 @@ Write and store tasks locally.
 
 Submit your complete code, along with a README file explaining how to set up and run the
 application.
-
-test
-123

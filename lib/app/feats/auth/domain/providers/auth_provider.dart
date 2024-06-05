@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/auth/domain/entity/user/user.dart';
 import 'package:mock_items_manager/app/feats/auth/domain/repository/i_auth_repository.dart';
 import 'package:mock_items_manager/core/failures/failures.dart';
@@ -47,6 +50,7 @@ class AuthProvider with ChangeNotifier {
       InvalidResponseFailure() => 'Invalid response, try again',
       UserMissingFailure() => 'User not found, try creating account',
       UserAlreadyExistsFailure() => 'This user already exists',
+      UnknownFailure() => 'Something went wrong',
     };
     notifyListeners();
   }

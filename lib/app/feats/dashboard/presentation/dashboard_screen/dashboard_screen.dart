@@ -1,13 +1,15 @@
-import 'package:auto_route/annotations.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:auto_route/auto_route.dart';
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/dashboard/domain/providers/dashboard_provider.dart';
 import 'package:mock_items_manager/app/feats/dashboard/presentation/dashboard_screen/widgets/task_card.dart';
 import 'package:mock_items_manager/common/widgets/base_screen.dart';
 import 'package:mock_items_manager/utils/router/router.dart';
-import 'package:provider/provider.dart';
 
 @RoutePage()
 class DashboardScreen extends StatelessWidget {
@@ -71,8 +73,7 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: true,
-                // visible: taskProvider.isLoading,
+                visible: taskProvider.isLoading,
                 child: Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
@@ -86,6 +87,52 @@ class DashboardScreen extends StatelessWidget {
                         height: 100,
                         width: 100,
                         child: CircularProgressIndicator(strokeWidth: 5),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: taskProvider.errorMessage != null,
+                child: Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.cancel_outlined, size: 125),
+                            const SizedBox(height: 15),
+                            Flexible(
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                taskProvider.errorMessage ?? '',
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Flexible(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  taskProvider.resetFailure();
+                                  taskProvider.loadTasks();
+                                },
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  'Try again',
+                                  style: Theme.of(context).textTheme.displaySmall,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,9 +1,14 @@
-import 'package:auto_route/auto_route.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:auto_route/auto_route.dart';
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:mock_items_manager/app/feats/auth/domain/providers/auth_provider.dart';
 import 'package:mock_items_manager/common/widgets/base_screen.dart';
 import 'package:mock_items_manager/utils/router/router.dart';
-import 'package:provider/provider.dart';
 
 @RoutePage()
 class SignInFormScreen extends StatefulWidget {
